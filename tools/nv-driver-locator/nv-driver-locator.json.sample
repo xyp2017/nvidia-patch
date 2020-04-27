@@ -226,9 +226,32 @@
             }
         },
         {
+            "type": "nvidia_downloads",
+            "name": "downloads linux tesla all",
+            "params": {
+                "os": "Linux_64",
+                "product": "Tesla",
+                "certlevel": "All"
+            }
+        },
+        {
             "type": "cuda_downloads",
             "name": "cuda toolkit tracker",
             "params": {}
+        },
+        {
+            "type": "vulkan_beta",
+            "name": "vulkan beta windows",
+            "params": {
+                "os": "Windows"
+            }
+        },
+        {
+            "type": "vulkan_beta",
+            "name": "vulkan beta linux",
+            "params": {
+                "os": "Linux"
+            }
         }
     ],
     "notifiers": [
