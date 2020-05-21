@@ -62,6 +62,8 @@ declare -A patch_list=(
     ["440.66.08"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
     ["440.66.09"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
     ["440.66.11"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["440.66.12"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["440.66.14"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
     ["440.82"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
 )
 
@@ -85,6 +87,8 @@ declare -A object_list=(
     ["440.66.08"]='libnvidia-fbc.so'
     ["440.66.09"]='libnvidia-fbc.so'
     ["440.66.11"]='libnvidia-fbc.so'
+    ["440.66.12"]='libnvidia-fbc.so'
+    ["440.66.14"]='libnvidia-fbc.so'
     ["440.82"]='libnvidia-fbc.so'
 )
 
@@ -107,8 +111,15 @@ patch_common () {
         exit 1
     fi
 
-    if ! driver_version=$("$NVIDIA_SMI" --query-gpu=driver_version --format=csv,noheader,nounits | head -n 1) ; then
-        echo 'Something went wrong. Check nvidia driver'
+    cmd="$NVIDIA_SMI --query-gpu=driver_version --format=csv,noheader,nounits"
+    driver_versions_list=$($cmd)
+    ret_code=$?
+    driver_version=$(echo "$driver_versions_list" | head -n 1)
+    if [[ $ret_code -ne 0 ]] ; then
+        echo "Can not detect nvidia driver version."
+        echo "CMD: \"$cmd\""
+        echo "Result: \"$driver_versions_list\""
+        echo "nvidia-smi retcode: $ret_code"
         exit 1
     fi
 

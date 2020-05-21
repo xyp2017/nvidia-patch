@@ -70,6 +70,7 @@ declare -A patch_list=(
     ["418.87.00"]='s/\x00\x00\x00\x84\xc0\x0f\x84\x0f\xfd\xff\xff/\x00\x00\x00\x84\xc0\x90\x90\x90\x90\x90\x90/g'
     ["418.87.01"]='s/\x00\x00\x00\x84\xc0\x0f\x84\x0f\xfd\xff\xff/\x00\x00\x00\x84\xc0\x90\x90\x90\x90\x90\x90/g'
     ["418.88"]='s/\x00\x00\x00\x84\xc0\x0f\x84\x0f\xfd\xff\xff/\x00\x00\x00\x84\xc0\x90\x90\x90\x90\x90\x90/g'
+    ["418.113"]='s/\x00\x00\x00\x84\xc0\x0f\x84\x0f\xfd\xff\xff/\x00\x00\x00\x84\xc0\x90\x90\x90\x90\x90\x90/g'
     ["430.09"]='s/\x00\x00\x00\x84\xc0\x0f\x84\x0f\xfd\xff\xff/\x00\x00\x00\x84\xc0\x90\x90\x90\x90\x90\x90/g'
     ["430.14"]='s/\x00\x00\x00\x84\xc0\x0f\x84\x0f\xfd\xff\xff/\x00\x00\x00\x84\xc0\x90\x90\x90\x90\x90\x90/g'
     ["430.26"]='s/\x00\x00\x00\x84\xc0\x0f\x84\x0f\xfd\xff\xff/\x00\x00\x00\x84\xc0\x90\x90\x90\x90\x90\x90/g'
@@ -98,6 +99,8 @@ declare -A patch_list=(
     ["440.66.08"]='s/\x85\xc0\x41\x89\xc4\x75\x1f/\x31\xc0\x41\x89\xc4\x75\x1f/g'
     ["440.66.09"]='s/\x85\xc0\x41\x89\xc4\x75\x1f/\x31\xc0\x41\x89\xc4\x75\x1f/g'
     ["440.66.11"]='s/\x85\xc0\x41\x89\xc4\x75\x1f/\x31\xc0\x41\x89\xc4\x75\x1f/g'
+    ["440.66.12"]='s/\x85\xc0\x41\x89\xc4\x75\x1f/\x31\xc0\x41\x89\xc4\x75\x1f/g'
+    ["440.66.14"]='s/\x85\xc0\x41\x89\xc4\x75\x1f/\x31\xc0\x41\x89\xc4\x75\x1f/g'
     ["440.82"]='s/\x85\xc0\x41\x89\xc4\x75\x1f/\x31\xc0\x41\x89\xc4\x75\x1f/g'
 )
 
@@ -127,6 +130,7 @@ declare -A object_list=(
     ["418.87.00"]='libnvcuvid.so'
     ["418.87.01"]='libnvcuvid.so'
     ["418.88"]='libnvcuvid.so'
+    ["418.113"]='libnvcuvid.so'
     ["430.09"]='libnvcuvid.so'
     ["430.14"]='libnvcuvid.so'
     ["430.26"]='libnvcuvid.so'
@@ -155,6 +159,8 @@ declare -A object_list=(
     ["440.66.08"]='libnvidia-encode.so'
     ["440.66.09"]='libnvidia-encode.so'
     ["440.66.11"]='libnvidia-encode.so'
+    ["440.66.12"]='libnvidia-encode.so'
+    ["440.66.14"]='libnvidia-encode.so'
     ["440.82"]='libnvidia-encode.so'
 )
 
@@ -177,8 +183,15 @@ patch_common () {
         exit 1
     fi
 
-    if ! driver_version=$("$NVIDIA_SMI" --query-gpu=driver_version --format=csv,noheader,nounits | head -n 1) ; then
-        echo 'Something went wrong. Check nvidia driver'
+    cmd="$NVIDIA_SMI --query-gpu=driver_version --format=csv,noheader,nounits"
+    driver_versions_list=$($cmd)
+    ret_code=$?
+    driver_version=$(echo "$driver_versions_list" | head -n 1)
+    if [[ $ret_code -ne 0 ]] ; then
+        echo "Can not detect nvidia driver version."
+        echo "CMD: \"$cmd\""
+        echo "Result: \"$driver_versions_list\""
+        echo "nvidia-smi retcode: $ret_code"
         exit 1
     fi
 
