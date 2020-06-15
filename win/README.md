@@ -1,7 +1,19 @@
 NVENC and NvFBC patches for Windows Nvidia drivers
 ==================================================
 
-![GitHub last commit](https://img.shields.io/github/last-commit/keylase/nvidia-patch.svg) ![Latest GeForce version](https://img.shields.io/badge/latest%20GeForce%20version-445.87-brightgreen.svg) ![Latest Quadro version](https://img.shields.io/badge/latest%20Quadro%20version-442.92-blue.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/keylase/nvidia-patch.svg) ![Latest GeForce version](https://img.shields.io/badge/latest%20GeForce%20version-446.14-brightgreen.svg) ![Latest Quadro version](https://img.shields.io/badge/latest%20Quadro%20version-442.92-blue.svg)
+
+---
+
+IPFS site mirror: [https://ipfs.io/ipns/QmYTEwv2GjQhtdN9bDfpLfQrVD7YLb1Sbh8igX8cEe9hHF/win/](https://ipfs.io/ipns/QmYTEwv2GjQhtdN9bDfpLfQrVD7YLb1Sbh8igX8cEe9hHF/win/)
+
+IPFS git mirror:
+
+```
+git clone https://ipfs.io/ipns/Qmed4r8yrBP162WK1ybd1DJWhLUi4t6mGuBoB9fLtjxR7u nvidia-patch
+```
+
+---
 
 NVENC patch removes restriction on maximum number of simultaneous NVENC video encoding sessions imposed by Nvidia to consumer-grade GPUs.
 
@@ -25,21 +37,25 @@ Requirements:
 ## NVENC Patch Step-by-Step Guide
 
 1. Download and install latest Nvidia driver supported by this patch.
-2. Download latest [Win\_1337\_Apply\_Patch tool](https://github.com/Deltafox79/Win_1337_Apply_Patch/releases/latest).
-3. Save patch(es) corresponding to your system, driver and product version from [Version Table](#version-table) using direct link to the patch (Right Click -> Save as...).
+2. Download latest [Win\_1337\_Apply\_Patch tool](https://github.com/Deltafox79/Win_1337_Apply_Patch/releases/latest) ([IPFS mirror](https://ipfs.io/ipfs/QmXHqNBPtmoX8g5rzg6vNJ9yd275kQtDWuDtVoU4QPfWbu/Win_1337_Apply_Patch_v1.9_By_DFoX.rar)).
+3. Save patch(es) corresponding to your system, driver and product version from [Version Table](#version-table) using direct link to the patch (Right Click -> "Save as\.\.\.")
    - *Alternatively you may checkout repo using git or download it as ZIP archive and then locate corresponding .1337 patch file in `win` directory.*
 4. Apply x64 library patch to corresponding file in `%WINDIR%\system32\` with the Win\_1337\_Apply\_Patch tool.
-   - *If patching fails, close all applications using nvencodeapi64.dll, such as OBS Studio or Plex.*
+   - *If patching fails, close all applications using nvencodeapi64.dll, such as OBS Studio, Plex or Discord.*
 5. Apply x86 library patch to corresponding file in `%WINDIR%\SysWOW64\` in the same way as previous one.
-   - *If patching fails, close all applications using nvencodeapi.dll, such as OBS Studio or Plex.*
+   - *If patching fails, close all applications using nvencodeapi.dll, such as OBS Studio, Plex or Discord.*
 
-**Example:** for 64bit Windows 10 running driver version 445.87, use `win10_x64/445.87/nvencodeapi64.1337` against `C:\WINDOWS\system32\nvencodeapi64.dll` **and** `win10_x64/445.87/nvencodeapi.1337` against `C:\WINDOWS\SysWOW64\nvencodeapi.dll`.
+**Example:** for 64bit Windows 10 running driver version 446.14, use `win10_x64/446.14/nvencodeapi64.1337` against `C:\WINDOWS\system32\nvencodeapi64.dll` **and** `win10_x64/446.14/nvencodeapi.1337` against `C:\WINDOWS\SysWOW64\nvencodeapi.dll`.
 
-If you experience issues with streaming software based on Nvidia streaming facilities (Nvidia Shield TV, Moonlight), you also have to import few registry values in order to workaround binary signature mismatch. See [**skip_sig_check** (clickable)](skip_sig_check) directory for instructions.
+If you experience issues with streaming software based on Nvidia streaming facilities (Nvidia Shield TV, Moonlight), you also have to import few registry values in order to workaround binary signature mismatch. See [**skip\_sig\_check** (clickable)](skip_sig_check) directory for instructions.
 
-A video tutorial is also available. Credits to designator2009. (*Covers older patches. Now we probably don't need to autorun executable if x86 library patch applied*)
+A video guide is also available:
 
-[![Video Tutorial](https://gist.githubusercontent.com/Snawoot/de26b6ccfe67c7bc89ea4347d7c2ecde/raw/50cd87a72c4e13214e6c609dc5291037bed9db8d/ss.jpg)](https://www.youtube.com/watch?v=y7TRfRsJR-w)
+[![Video Guide](https://user-images.githubusercontent.com/3524671/84598317-82ab7180-ae72-11ea-8c1b-04842ff589f1.jpg)](https://www.youtube.com/watch?v=0fxu7zbhmrs)
+
+[(IPFS mirror)](https://ipfs.io/ipfs/QmakoWuecX397t7fF8MnTyqG4UC2DrteHrGRmTnwYYKbCK/Nvidia%20-%20Removing%20NVENC%20stream%20limit%20_%20Unlock%20NVENC%20sessions-0fxu7zbhmrs.mkv)
+
+Credits to [TroubleChute channel](https://www.youtube.com/channel/UCkih2oVTbXPEpVwE-U7kmHw/).
 
 ## Version Table
 
@@ -95,8 +111,10 @@ A video tutorial is also available. Credits to designator2009. (*Covers older pa
 | GeForce | 442.98 Vulkan Beta | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/442.98/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/442.98/nvencodeapi.1337) |  |
 | GeForce | 443.09 Vulkan Beta | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/443.09/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/443.09/nvencodeapi.1337) |  |
 | GeForce | 443.15 Vulkan Beta | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/443.15/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/443.15/nvencodeapi.1337) |  |
+| GeForce | 443.24 Vulkan Beta | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/443.24/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/443.24/nvencodeapi.1337) |  |
 | GeForce | 445.75 | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/445.75/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/445.75/nvencodeapi.1337) | [Driver link](https://international.download.nvidia.com/Windows/445.75/445.75-desktop-win10-64bit-international-whql.exe) |
 | GeForce | 445.87 | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/445.87/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/445.87/nvencodeapi.1337) | [Driver link](https://international.download.nvidia.com/Windows/445.87/445.87-desktop-win10-64bit-international-whql.exe) |
+| GeForce | 446.14 | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/446.14/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win10_x64/446.14/nvencodeapi.1337) | [Driver link](https://international.download.nvidia.com/Windows/446.14/446.14-desktop-win10-64bit-international-whql.exe) |
 
 
 | Product series | Version | x64 library patch | x86 library patch | Driver link |
@@ -154,8 +172,10 @@ A video tutorial is also available. Credits to designator2009. (*Covers older pa
 | GeForce | 442.98 Vulkan Beta | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/442.98/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/442.98/nvencodeapi.1337) |  |
 | GeForce | 443.09 Vulkan Beta | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/443.09/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/443.09/nvencodeapi.1337) |  |
 | GeForce | 443.15 Vulkan Beta | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/443.15/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/443.15/nvencodeapi.1337) |  |
+| GeForce | 443.24 Vulkan Beta | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/443.24/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/443.24/nvencodeapi.1337) |  |
 | GeForce | 445.75 | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/445.75/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/445.75/nvencodeapi.1337) | [Driver link](https://international.download.nvidia.com/Windows/445.75/445.75-desktop-win8-win7-64bit-international-whql.exe) |
 | GeForce | 445.87 | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/445.87/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/445.87/nvencodeapi.1337) | [Driver link](https://international.download.nvidia.com/Windows/445.87/445.87-desktop-win8-win7-64bit-international-whql.exe) |
+| GeForce | 446.14 | [x64 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/446.14/nvencodeapi64.1337) | [x86 library patch](https://raw.githubusercontent.com/keylase/nvidia-patch/master/win/win7_x64/446.14/nvencodeapi.1337) | [Driver link](https://international.download.nvidia.com/Windows/446.14/446.14-desktop-win8-win7-64bit-international-whql.exe) |
 
 
 | Product series | Version | x64 library patch | x86 library patch | Driver link |
