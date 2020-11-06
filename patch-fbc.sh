@@ -6,6 +6,7 @@ set -euo pipefail ; # <- this semicolon and comment make options apply
 
 backup_path="/opt/nvidia/libnvidia-fbc-backup"
 silent_flag=''
+manual_driver_version=''
 
 print_usage() { printf '
 SYNOPSIS
@@ -20,6 +21,8 @@ DESCRIPTION
        -c VERSION     Check if version VERSION supported by this patch.
                       Returns true exit code (0) if version is supported.
        -l             List supported driver versions
+       -d VERSION     Use VERSION driver version when looking for libraries
+                      instead of using nvidia-smi to detect it.
 
 '
 }
@@ -27,13 +30,14 @@ DESCRIPTION
 # shellcheck disable=SC2209
 opmode="patch"
 
-while getopts 'rshc:l' flag; do
+while getopts 'rshc:ld:' flag; do
     case "${flag}" in
         r) opmode="${opmode}rollback" ;;
         s) silent_flag='true' ;;
         h) opmode="${opmode}help" ;;
         c) opmode="${opmode}checkversion" ; checked_version="$OPTARG" ;;
         l) opmode="${opmode}listversions" ;;
+        d) manual_driver_version="$OPTARG" ;;
         *) echo "Incorrect option specified in command line" ; exit 2 ;;
     esac
 done
@@ -69,8 +73,25 @@ declare -A patch_list=(
     ["440.82"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
     ["440.95.01"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
     ["440.100"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["440.118.02"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
     ["450.36.06"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
     ["450.51"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["450.51.05"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["450.51.06"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["450.56.01"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["450.56.02"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["450.56.06"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["450.56.11"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["450.57"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["450.66"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["450.80.02"]='s/\x85\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/\x31\xc0\x89\xc3\x0f\x85\xa9\xfa\xff\xff/'
+    ["455.23.04"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
+    ["455.23.05"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
+    ["455.26.01"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
+    ["455.26.02"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
+    ["455.28"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
+    ["455.32.00"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
+    ["455.38"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
 )
 
 declare -A object_list=(
@@ -100,8 +121,25 @@ declare -A object_list=(
     ["440.82"]='libnvidia-fbc.so'
     ["440.95.01"]='libnvidia-fbc.so'
     ["440.100"]='libnvidia-fbc.so'
+    ["440.118.02"]='libnvidia-fbc.so'
     ["450.36.06"]='libnvidia-fbc.so'
     ["450.51"]='libnvidia-fbc.so'
+    ["450.51.05"]='libnvidia-fbc.so'
+    ["450.51.06"]='libnvidia-fbc.so'
+    ["450.56.01"]='libnvidia-fbc.so'
+    ["450.56.02"]='libnvidia-fbc.so'
+    ["450.56.06"]='libnvidia-fbc.so'
+    ["450.56.11"]='libnvidia-fbc.so'
+    ["450.57"]='libnvidia-fbc.so'
+    ["450.66"]='libnvidia-fbc.so'
+    ["450.80.02"]='libnvidia-fbc.so'
+    ["455.23.04"]='libnvidia-fbc.so'
+    ["455.23.05"]='libnvidia-fbc.so'
+    ["455.26.01"]='libnvidia-fbc.so'
+    ["455.26.02"]='libnvidia-fbc.so'
+    ["455.28"]='libnvidia-fbc.so'
+    ["455.32.00"]='libnvidia-fbc.so'
+    ["455.38"]='libnvidia-fbc.so'
 )
 
 check_version_supported () {
@@ -123,19 +161,25 @@ patch_common () {
         exit 1
     fi
 
-    cmd="$NVIDIA_SMI --query-gpu=driver_version --format=csv,noheader,nounits"
-    driver_versions_list=$($cmd)
-    ret_code=$?
-    driver_version=$(echo "$driver_versions_list" | head -n 1)
-    if [[ $ret_code -ne 0 ]] ; then
-        echo "Can not detect nvidia driver version."
-        echo "CMD: \"$cmd\""
-        echo "Result: \"$driver_versions_list\""
-        echo "nvidia-smi retcode: $ret_code"
-        exit 1
-    fi
+    if [[ "$manual_driver_version" ]]; then
+        driver_version="$manual_driver_version"
 
-    echo "Detected nvidia driver version: $driver_version"
+        echo "Using manually entered nvidia driver version: $driver_version"
+    else
+        cmd="$NVIDIA_SMI --query-gpu=driver_version --format=csv,noheader,nounits"
+        driver_versions_list=$($cmd)
+        ret_code=$?
+        driver_version=$(echo "$driver_versions_list" | head -n 1)
+        if [[ $ret_code -ne 0 ]] ; then
+            echo "Can not detect nvidia driver version."
+            echo "CMD: \"$cmd\""
+            echo "Result: \"$driver_versions_list\""
+            echo "nvidia-smi retcode: $ret_code"
+            exit 1
+        fi
+
+        echo "Detected nvidia driver version: $driver_version"
+    fi
 
     if ! check_version_supported "$driver_version" ; then
         echo "Patch for this ($driver_version) nvidia driver not found."

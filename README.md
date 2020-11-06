@@ -1,9 +1,26 @@
 NVENC and NvFBC patches for Nvidia drivers
 ==========================================
 
-![GitHub last commit](https://img.shields.io/github/last-commit/keylase/nvidia-patch.svg) ![Latest version](https://img.shields.io/badge/latest%20linux%20driver%20version-450.51-brightgreen.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/keylase/nvidia-patch.svg) ![Latest version](https://img.shields.io/badge/latest%20linux%20driver%20version-455.38-brightgreen.svg)
+
+[NVENC patch](patch.sh) removes restriction on maximum number of simultaneous NVENC video encoding sessions imposed by Nvidia to consumer-grade GPUs.
+
+[NvFBC patch](patch-fbc.sh) allows to use NvFBC on consumer-grade GPUs. It should be applied same way as NVENC `patch.sh`, except you have to use `patch-fbc.sh` instead.
+
+Main target operating system is **GNU/Linux**, but for **Windows** support see [**win** (clickable)](win).
 
 ---
+
+:heart: :heart: :heart:
+
+You can say thanks to the author and support ongoing efforts with donations to these wallets:
+
+- BTC: `1Q9uQAFNviHZEW7yT5sNsi4MJnxaL2tvvK`
+- ETH: `0xE55e48b116D0dd4d26adafB65B92e74F0ac73636`
+
+---
+
+## Mirrors
 
 IPFS site mirror: [https://ipfs.io/ipns/QmYTEwv2GjQhtdN9bDfpLfQrVD7YLb1Sbh8igX8cEe9hHF/](https://ipfs.io/ipns/QmYTEwv2GjQhtdN9bDfpLfQrVD7YLb1Sbh8igX8cEe9hHF/)
 
@@ -13,15 +30,7 @@ IPFS git mirror:
 git clone https://ipfs.io/ipns/Qmed4r8yrBP162WK1ybd1DJWhLUi4t6mGuBoB9fLtjxR7u nvidia-patch
 ```
 
----
-
-[NVENC patch](patch.sh) removes restriction on maximum number of simultaneous NVENC video encoding sessions imposed by Nvidia to consumer-grade GPUs.
-
-[NvFBC patch](patch-fbc.sh) allows to use NvFBC on consumer-grade GPUs. It should be applied same way as NVENC `patch.sh`, except you have to use `patch-fbc.sh` instead.
-
-Main target operating system is **GNU/Linux**, but for **Windows** support see [**win** (clickable)](win).
-
-Requirements:
+## Requirements
 - x86\_64 system architecture
 - GNU/Linux operating system
 - nvenc-compatible gpu (https://developer.nvidia.com/video-encode-decode-gpu-support-matrix#Encoder)
@@ -92,8 +101,26 @@ Requirements:
 | 440.82 | YES | YES | [Driver link](https://international.download.nvidia.com/XFree86/Linux-x86_64/440.82/NVIDIA-Linux-x86_64-440.82.run) |
 | 440.95.01 | YES | YES | [Driver link](https://international.download.nvidia.com/tesla/440.95.01/NVIDIA-Linux-x86_64-440.95.01.run) |
 | 440.100 | YES | YES | [Driver link](https://international.download.nvidia.com/XFree86/Linux-x86_64/440.100/NVIDIA-Linux-x86_64-440.100.run) |
+| 440.118.02 | YES | YES | [Driver link](https://international.download.nvidia.com/tesla/440.118.02/NVIDIA-Linux-x86_64-440.118.02.run) |
 | 450.36.06 | YES | YES | [Driver link](https://developer.download.nvidia.com/compute/cuda/11.0.1/local_installers/cuda_11.0.1_450.36.06_linux.run) |
 | 450.51 | YES | YES | [Driver link](https://international.download.nvidia.com/XFree86/Linux-x86_64/450.51/NVIDIA-Linux-x86_64-450.51.run) |
+| 450.51.05 | YES | YES | [Driver link](https://international.download.nvidia.com/tesla/450.51.05/NVIDIA-Linux-x86_64-450.51.05.run) |
+| 450.51.06 | YES | YES | [Driver link](https://international.download.nvidia.com/tesla/450.51.06/NVIDIA-Linux-x86_64-450.51.06.run) |
+| 450.56.01 | YES | YES |  |
+| 450.56.02 | YES | YES |  |
+| 450.56.06 | YES | YES |  |
+| 450.56.11 | YES | YES |  |
+| 450.57 | YES | YES | [Driver link](https://international.download.nvidia.com/XFree86/Linux-x86_64/450.57/NVIDIA-Linux-x86_64-450.57.run) |
+| 450.66 | YES | YES | [Driver link](https://international.download.nvidia.com/XFree86/Linux-x86_64/450.66/NVIDIA-Linux-x86_64-450.66.run) |
+| 450.80.02 | YES | YES | [Driver link](https://international.download.nvidia.com/XFree86/Linux-x86_64/450.80.02/NVIDIA-Linux-x86_64-450.80.02.run) |
+| 455.22.04 | YES | NO |  |
+| 455.23.04 | YES | YES | [Driver link](https://international.download.nvidia.com/XFree86/Linux-x86_64/455.23.04/NVIDIA-Linux-x86_64-455.23.04.run) |
+| 455.23.05 | YES | YES |  |
+| 455.26.01 | YES | YES |  |
+| 455.26.02 | YES | YES |  |
+| 455.28 | YES | YES | [Driver link](https://international.download.nvidia.com/XFree86/Linux-x86_64/455.28/NVIDIA-Linux-x86_64-455.28.run) |
+| 455.32.00 | YES | YES |  |
+| 455.38 | YES | YES | [Driver link](https://international.download.nvidia.com/XFree86/Linux-x86_64/455.38/NVIDIA-Linux-x86_64-455.38.run) |
 
 ## Synopsis
 
@@ -101,10 +128,10 @@ Requirements:
 # bash ./patch.sh -h
 
 SYNOPSIS
-       patch.sh [-s] [-r|-h|-c VERSION|-l]
+       patch-fbc.sh [-s] [-r|-h|-c VERSION|-l]
 
 DESCRIPTION
-       The patch for Nvidia drivers to remove NVENC session limit
+       The patch for Nvidia drivers to allow FBC on consumer devices
 
        -s             Silent mode (No output)
        -r             Rollback to original (Restore lib from backup)
@@ -112,6 +139,8 @@ DESCRIPTION
        -c VERSION     Check if version VERSION supported by this patch.
                       Returns true exit code (0) if version is supported.
        -l             List supported driver versions
+       -d VERSION     Use VERSION driver version when looking for libraries
+                      instead of using nvidia-smi to detect it.
 
 ```
 
