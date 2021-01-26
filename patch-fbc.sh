@@ -92,6 +92,13 @@ declare -A patch_list=(
     ["455.28"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
     ["455.32.00"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
     ["455.38"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
+    ["455.45.01"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
+    ["455.46.01"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
+    ["455.46.02"]='s/\x83\xf8\x01\x0f\x84\x83/\x83\xf8\x69\x0f\x84\x83/'
+    ["455.46.04"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
+    ["455.50.02"]='s/\x83\xf8\x01\x0f\x84\x85/\x83\xf8\x69\x0f\x84\x85/'
+    ["460.27.04"]='s/\x83\xfe\x01\x73\x08\x48/\x83\xfe\x00\x72\x08\x48/'
+    ["460.32.03"]='s/\x83\xfe\x01\x73\x08\x48/\x83\xfe\x00\x72\x08\x48/'
 )
 
 declare -A object_list=(
@@ -140,6 +147,13 @@ declare -A object_list=(
     ["455.28"]='libnvidia-fbc.so'
     ["455.32.00"]='libnvidia-fbc.so'
     ["455.38"]='libnvidia-fbc.so'
+    ["455.45.01"]='libnvidia-fbc.so'
+    ["455.46.01"]='libnvidia-fbc.so'
+    ["455.46.02"]='libnvidia-fbc.so'
+    ["455.46.04"]='libnvidia-fbc.so'
+    ["455.50.02"]='libnvidia-fbc.so'
+    ["460.27.04"]='libnvidia-fbc.so'
+    ["460.32.03"]='libnvidia-fbc.so'
 )
 
 check_version_supported () {
@@ -167,16 +181,15 @@ patch_common () {
         echo "Using manually entered nvidia driver version: $driver_version"
     else
         cmd="$NVIDIA_SMI --query-gpu=driver_version --format=csv,noheader,nounits"
-        driver_versions_list=$($cmd)
-        ret_code=$?
-        driver_version=$(echo "$driver_versions_list" | head -n 1)
-        if [[ $ret_code -ne 0 ]] ; then
+        driver_versions_list=$($cmd) || (
+            ret_code=$?
             echo "Can not detect nvidia driver version."
             echo "CMD: \"$cmd\""
             echo "Result: \"$driver_versions_list\""
             echo "nvidia-smi retcode: $ret_code"
             exit 1
-        fi
+        )
+        driver_version=$(echo "$driver_versions_list" | head -n 1)
 
         echo "Detected nvidia driver version: $driver_version"
     fi
